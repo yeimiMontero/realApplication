@@ -8,6 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,9 @@ public class ContactController {
     @Qualifier("contactServiceImpl")
     private ContactService contactService;
 
+    //Permite escribir expresiones de Spring del tipo hasRole y así si el rol existe en la bd permite mostrar
+    // el método o clase dependiendo de lo que se desea -- si escribes un rol no existente de muestra la platilla 403.html
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/contactform")
     private String redirectContactForm(@RequestParam(name = "id", required = false)int id,
                                        Model model){
@@ -54,6 +60,13 @@ public class ContactController {
     @GetMapping("/showcontacts")
     public ModelAndView showContacts() {
         ModelAndView mav = new ModelAndView(ViewConstant.CONTACTS);
+
+        //Obtiene el usuario que se encuentra loggeado en este moment9
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //Se obtiene el username
+        mav.addObject("username", user.getUsername());
+
+
         mav.addObject("contacts",contactService.listAllContacts());
         return mav;
     }

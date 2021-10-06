@@ -1,6 +1,6 @@
 package com.udemy.backendninja.service.impl;
 
-import com.udemy.backendninja.controller.ContactConverter;
+import com.udemy.backendninja.component.ContactConverter;
 import com.udemy.backendninja.entity.Contact;
 import com.udemy.backendninja.model.ContactModel;
 import com.udemy.backendninja.repository.ContactRepository;
